@@ -8,7 +8,7 @@ router.get(`/` , async function(req , res){
     return res.json({invoices: allInvoices.rows}).send
 })
 
-routuer.get(`/:id`, async function(req , res){
+router.get(`/:id`, async function(req , res){
     let invoice = await db.query(`SELECT * FROM invoices WHERE id = $1` ,[req.params.id] )
     return res.json({response: invoice}).send
 })

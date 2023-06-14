@@ -4,6 +4,8 @@ const compt_routes = require("./routes/routes_companies")
 const invoice_routes = require("./routes/routes_invoices")
 const path = require("path")
 const bodyParser = require('body-parser');
+const slugify = require("slugify");
+const expbs = require("express-handlebars")
 const db = require("./db");
 
 
@@ -14,12 +16,15 @@ const app = express();
 //   express: app
 // });
 //middleware and routes
+app.engine("handlebars" , expbs.engine({ extname: 'handlebars', defaultLayout: "editComp"}))
+
+app.set("view engine" , "handlebars")
 app.use(express.json());
 app.use("/companies" , compt_routes)
 app.use("/invoices" , invoice_routes)
 app.use(express.json())
 app.use(bodyParser.urlencoded({ extended: true }));
-
+app.use(express.static("public"))
 
 
 
@@ -30,12 +35,13 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get("/" , function(req , res){
   return res.sendFile(path.join(__dirname,`./templates/addcompany.html`))
+  
 })
 /** general error handler */
 
 
 app.post("/" , async function(req, res){
-  let compCode = (req.body.compCode)
+  let compCode = slugify((req.body.compCode))
   let compName = (req.body.compName)
   let descrp = (req.body.description)
   
